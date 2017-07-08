@@ -5,20 +5,30 @@ import os
 class HALUnixConan(ConanFile):
     name = "HALUnix"
     version = "develop"
-    license = "<Put the package license here>"
-    url = "<Package recipe repository url here, for issues about the package>"
+    license = "Apache License, Version 2.0. https://www.apache.org/licenses/LICENSE-2.0"
+    url = "https://github.com/Dr-QP/HALUnix"
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
-    default_options = "shared=False"
+    default_options = "shared=True", "Boost:shared=True"
     generators = "cmake"
+    exports_sources = "*"
+    requires = "Boost/1.64.0@anton-matosov/stable"
+    # remotes = "https://api.bintray.com/conan/anton-matosov/general"
+
+    def configure(self):
+        self.options["Boost"].shared = self.options.shared
+
+
+    def imports(self):
+        self.copy("*.dll", "", "bin")
+        self.copy("*.dylib", "", "lib")
 
     def build(self):
         cmake = CMake(self)
         shared = "-DBUILD_SHARED_LIBS=ON" if self.options.shared else ""
         install = '-DCMAKE_INSTALL_PREFIX="%s"' % self.package_folder
-        self.run('cmake %s %s %s %s' % (self.conanfile_directory,
-                                     cmake.command_line, install, shared))
-        self.run("cmake --build . --target install %s" % cmake.build_config)
+        self.run('cmake . %s %s %s' % (cmake.command_line, install, shared))
+        self.run("cmake --build . %s" % cmake.build_config)  # --target install
 
     def package(self):
         self.copy("*.h", dst="include", src="HALUnix")
