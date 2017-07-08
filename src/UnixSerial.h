@@ -4,7 +4,7 @@
 
 #pragma once 
 
-#include "SerialProtocol.h"
+#include <SerialProtocol.h>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/serial_port.hpp>
 
