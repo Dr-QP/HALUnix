@@ -1,5 +1,5 @@
 #include <iostream>
-#include "UnixSerial.h"
+#include <UnixSerial.h>
 
 int main() {
     UnixSerial serial("/dev/tty");

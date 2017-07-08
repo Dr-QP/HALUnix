@@ -11,8 +11,8 @@ class HALUnixConan(ConanFile):
     options = {"shared": [True, False]}
     default_options = "shared=True", "Boost:shared=True"
     generators = "cmake"
-    exports_sources = "*"
-    requires = "Boost/1.64.0@anton-matosov/stable"
+    exports_sources = "*", "!build/*", "!test_package/*"
+    requires = "HAL/develop@anton-matosov/dev", "Boost/1.64.0@anton-matosov/stable"
     # remotes = "https://api.bintray.com/conan/anton-matosov/general"
 
     def configure(self):
@@ -31,7 +31,7 @@ class HALUnixConan(ConanFile):
         self.run("cmake --build . %s" % cmake.build_config)  # --target install
 
     def package(self):
-        self.copy("*.h", dst="include", src="HALUnix")
+        self.copy("*.h", dst="include", src="src")
         self.copy("*HALUnix.lib", dst="lib", keep_path=False)
         self.copy("*.dll", dst="bin", keep_path=False)
         self.copy("*.so", dst="lib", keep_path=False)
@@ -39,4 +39,6 @@ class HALUnixConan(ConanFile):
         self.copy("*.a", dst="lib", keep_path=False)
 
     def package_info(self):
+        self.cpp_info.includedirs = ['include']
+        self.cpp_info.cppflags = ['-std=c++11']
         self.cpp_info.libs = ["HALUnix"]
